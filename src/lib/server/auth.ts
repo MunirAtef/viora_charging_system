@@ -1,22 +1,10 @@
-import { randomBytes, randomUUID, scrypt, timingSafeEqual } from 'node:crypto';
-import { promisify } from 'node:util';
+import { randomUUID } from 'node:crypto';
 import type { Cookies } from '@sveltejs/kit';
 import { sql } from './db';
 
-const derive = promisify(scrypt) as (p: string, s: string, k: number) => Promise<Buffer>;
 const SESSION_DAYS = 30;
 
-export async function hashPassword(password: string) {
-	const salt = randomBytes(16).toString('hex');
-	return `${salt}:${(await derive(password, salt, 64)).toString('hex')}`;
-}
-
-export async function verifyPassword(password: string, stored: string) {
-	const [salt, key] = stored.split(':');
-	const hash = await derive(password, salt, 64);
-	const expected = Buffer.from(key, 'hex');
-	return hash.length === expected.length && timingSafeEqual(hash, expected);
-}
+export { hashPassword, verifyPassword } from '$lib/password';
 
 export async function createSession(cookies: Cookies, userId: number) {
 	const id = randomUUID();

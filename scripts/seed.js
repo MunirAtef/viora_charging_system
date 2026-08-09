@@ -79,6 +79,3 @@ await sql.end();
 console.log(
 	`seeded ${apps.length} apps, ${countries.length} countries, ${quotas.length} quotas, ${prices.length} prices`
 );
-
-// email: admin@elhawarey.com
-// pass: Hawarey-8689

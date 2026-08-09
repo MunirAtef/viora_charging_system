@@ -12,6 +12,54 @@ npm run smoke           # money-path check (rolls back)
 npm run dev
 ```
 
+## Deploying (Podman, behind nginx)
+
+nginx on the host owns the domain and the TLS certificate; this stack only serves plain HTTP on
+port 3000.
+
+```bash
+git clone https://github.com/MunirAtef/viora_charging_system.git && cd viora_charging_system
+cp .env.example .env      # fill in every blank, see below
+podman compose up -d --build
+podman compose exec app node scripts/seed.js   # once: apps, countries, starting prices
+```
+
+Later deploys are one command — `./update.sh` pulls, rebuilds, restarts, waits for the app to
+answer, and prunes the images the old build left behind.
+
+`.env` must carry: `POSTGRES_PASSWORD` (long and random — the database is on a public port),
+`ORIGIN` (the public https URL nginx serves), `ADMIN_EMAIL` / `ADMIN_PASSWORD`, and the VAPID
+pair from `npx web-push generate-vapid-keys`. `DATABASE_URL` is assembled by compose; the app
+reaches Postgres as `db:5432` inside the pod, never over the public address.
+
+Every boot the app applies `schema.sql` and ensures the admin account exists — both idempotent,
+so restarts and redeploys are safe. Catalogue seeding stays manual so it can never re-enable a
+package you disabled.
+
+### The nginx side
+
+`ORIGIN` must equal the public URL exactly — that single value is what the app treats as its
+own address, and a form POST whose `Origin` differs is rejected as cross-site (403).
+
+```nginx
+location / {
+    proxy_pass         http://127.0.0.1:3000;
+    proxy_set_header   Host              $host;
+    proxy_set_header   X-Forwarded-Proto $scheme;
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+}
+```
+
+Redirects come back relative (`Location: /account`), so they follow whatever domain nginx
+serves. Session cookies are `Secure` and web push needs https — both are satisfied as long as
+browsers reach nginx over TLS, which is already your setup's job.
+
+**The database is published on `0.0.0.0:5432` by request.** Public Postgres is found by
+scanners within hours, so the password is the only thing between them and the data: make it
+long, and never reuse it. Authentication is forced to scram-sha-256. To close it later set
+`DB_BIND=127.0.0.1` in `.env` and `podman compose up -d` — nothing else changes. The same
+applies to the app: `APP_BIND=127.0.0.1` makes nginx the only way in.
+
 ## Routes
 
 - `/` apps (active / قريباً), country grid, packages, how it works, contact
