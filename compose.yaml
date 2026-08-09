@@ -21,7 +21,8 @@ services:
       - -c
       - password_encryption=scram-sha-256
     ports:
-      - '${DB_BIND:-0.0.0.0}:5432:5432'
+      # host port only — inside the pod the app always talks to db:5432
+      - '${DB_BIND:-0.0.0.0}:${DB_PORT:-5432}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -35,9 +36,10 @@ services:
       context: .
       dockerfile: Containerfile
     restart: unless-stopped
+    # plain form: older podman-compose ignores healthcheck conditions anyway, and the app's
+    # entrypoint waits for the database itself
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       # inside the pod the database is a service name, never the public address
       DATABASE_URL: postgres://${POSTGRES_USER:-elhawarey}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-elhawarey}
@@ -55,7 +57,7 @@ services:
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY}
       VAPID_SUBJECT: ${VAPID_SUBJECT}
     ports:
-      - '${APP_BIND:-0.0.0.0}:3000:3000'
+      - '${APP_BIND:-0.0.0.0}:${APP_PORT:-3000}:3000'
 
 volumes:
   pgdata:

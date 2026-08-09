@@ -35,9 +35,14 @@ fi
 echo "› rebuilding and restarting"
 podman compose up -d --build
 
-echo "› waiting for the app"
+# read the published port out of .env rather than sourcing it — one line, no surprises from
+# quoting in the secret values
+port=$(sed -n 's/^APP_PORT=\([0-9]*\).*/\1/p' .env)
+port=${port:-3000}
+
+echo "› waiting for the app on :$port"
 i=0
-until curl -fsS -o /dev/null "http://127.0.0.1:${PORT:-3000}/"; do
+until curl -fsS -o /dev/null "http://127.0.0.1:$port/"; do
 	i=$((i + 1))
 	[ "$i" -lt 30 ] || {
 		echo "app did not come up — podman compose logs app"

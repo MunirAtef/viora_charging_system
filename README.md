@@ -27,6 +27,10 @@ podman compose exec app node scripts/seed.js   # once: apps, countries, starting
 Later deploys are one command — `./update.sh` pulls, rebuilds, restarts, waits for the app to
 answer, and prunes the images the old build left behind.
 
+If the VPS already runs Postgres, pick free host ports with `ss -ltnp` and set `DB_PORT` /
+`APP_PORT` in `.env` — only the published ports change, the app still reaches the database as
+`db:5432` inside the pod. `APP_PORT` is what nginx proxies to.
+
 `.env` must carry: `POSTGRES_PASSWORD` (long and random — the database is on a public port),
 `ORIGIN` (the public https URL nginx serves), `ADMIN_EMAIL` / `ADMIN_PASSWORD`, and the VAPID
 pair from `npx web-push generate-vapid-keys`. `DATABASE_URL` is assembled by compose; the app
