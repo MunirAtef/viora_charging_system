@@ -22,7 +22,7 @@ services:
       - password_encryption=scram-sha-256
     ports:
       # host port only — inside the pod the app always talks to db:5432
-      - '${DB_BIND:-0.0.0.0}:${DB_PORT:-5432}:5432'
+      - '${DB_BIND:-0.0.0.0}:${DB_PORT:-4324}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
