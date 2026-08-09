@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+@theme {
+	--color-ink: #150e1e;
+	--color-plum: #1e1430;
+	--color-surface: #2a1c3f;
+	--color-edge: #453064;
+	--color-gem: #4de3d0;
+	--color-gold: #f5b544;
+	--color-muted: #a394bb;
+
+	--font-display: 'Zain', system-ui, sans-serif;
+	--font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+	--font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html {
+	background: var(--color-ink);
+}
+
+body {
+	font-family: var(--font-body);
+	color: white;
+	min-height: 100vh;
+	/* two cool light sources, like a stone lit from above */
+	background:
+		radial-gradient(90% 60% at 15% -10%, #3d1c5c 0%, transparent 60%),
+		radial-gradient(70% 50% at 95% 0%, #2b2f6b 0%, transparent 55%), var(--color-ink);
+	background-attachment: fixed;
+}
+
+/* The signature: every panel is a cut stone — two corners chamfered, 1px lit edge. */
+.facet {
+	--cut: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+	position: relative;
+	background: var(--color-edge);
+	clip-path: var(--cut);
+	transition: background 150ms ease;
+}
+.facet::before {
+	content: '';
+	position: absolute;
+	inset: 1px;
+	background: var(--color-surface);
+	clip-path: var(--cut);
+}
+.facet > * {
+	position: relative;
+}
+
+.facet:hover,
+.facet:focus-within,
+.facet[data-on='true'] {
+	background: var(--color-gem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		transition: none !important;
+		animation: none !important;
+	}
+}
+
+/* Printing is for documents, not for the site around them: nav, footer and controls come off. */
+@page {
+	margin: 10mm;
+}
+
+@media print {
+	html,
+	body {
+		background: white;
+		color: black;
+		min-height: 0;
+	}
+	/* by class, never by tag — a document has its own <header> that must print */
+	.no-print {
+		display: none !important;
+	}
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-gem);
+	outline-offset: 2px;
+}
+
+/* Prices, IDs and counts read as data, not prose. */
+.tabular {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.field {
+	width: 100%;
+	background: #120c1c;
+	border: 1px solid var(--color-edge);
+	padding: 0.6rem 0.8rem;
+	color: white;
+}
+.field:focus {
+	border-color: var(--color-gem);
+	outline: none;
+}
