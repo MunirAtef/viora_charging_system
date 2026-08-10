@@ -5,9 +5,16 @@
 	let { data } = $props();
 
 	const o = $derived(data.order);
+
+	// A document must read identically wherever it is printed, so dates are pinned to the
+	// company's timezone instead of the server's — otherwise the same invoice shows a
+	// different day in a UTC container than it does on a machine in +03.
+	const ZONE = 'Africa/Cairo';
 	// ISO-ish dates read the same in every locale, which is what an invoice wants
-	const day = (d: string | null) => (d ? new Date(d).toLocaleDateString('en-CA') : '—');
-	const stamp = (d: string | null) => (d ? new Date(d).toLocaleString('en-GB') : '—');
+	const day = (d: string | null) =>
+		d ? new Date(d).toLocaleDateString('en-CA', { timeZone: ZONE }) : '—';
+	const stamp = (d: string | null) =>
+		d ? new Date(d).toLocaleString('en-GB', { timeZone: ZONE }) : '—';
 	const money = $derived((n: string) => `${Number(n).toFixed(2)} ${o.currency}`);
 	// the rest of the site names countries in Arabic; an English invoice names them in English
 	const regions = new Intl.DisplayNames(['en'], { type: 'region' });
@@ -87,7 +94,7 @@
 			</thead>
 			<tbody>
 				<tr class="border-b border-neutral-200">
-					<td class="py-4 print:py-3">Digital Service</td>
+					<td class="py-4 print:py-3">Digital Coins</td>
 					<td class="tabular py-4 text-right">{money(o.amount)}</td>
 					<td class="tabular py-4 text-right">1</td>
 					<td class="tabular py-4 text-right">{money(o.amount)}</td>

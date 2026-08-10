@@ -27,3 +27,4 @@ vite.config.ts.timestamp-*
 run_on_db.sql
 demo_reviews.sql
 import_customers.sql
+import_invoice_*.sql
