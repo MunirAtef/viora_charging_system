@@ -124,8 +124,9 @@ export default {
 		bankTitle: 'Bank transfer',
 		bankNote: (ref: string) =>
 			`Pick the account closest to your country and put order ${ref} in the reference field so we can match your payment immediately.`,
-		cardSoon:
-			'Card payment through the gateway is being activated. No coins are delivered before payment is confirmed, and you can cancel free of charge until then.',
+		cardSoon: 'Card payment — coming soon',
+		noCharge:
+			'No coins are delivered before payment is confirmed, and you can cancel free of charge until then.',
 		cancel: 'Cancel order',
 		paidBanner:
 			'We received your payment and your coins are being delivered now — usually one or two minutes.',
@@ -180,7 +181,8 @@ export default {
 	},
 	reviews: {
 		title: 'What our customers say',
-		note: (n: number, avg: string) => `${avg} out of 5 from ${n} verified purchases`,
+		completed: (n: string) => `${n} top-ups delivered`,
+		note: (n: number, avg: string) => `${avg} out of 5 from verified purchases`,
 		empty: 'No reviews yet — every order can leave one once it is delivered.',
 		verified: 'Verified purchase',
 		formTitle: 'Rate your order',

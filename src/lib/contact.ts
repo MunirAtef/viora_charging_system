@@ -6,16 +6,17 @@ export const contact = {
 	phone: '+1 234 279 6813',
 	whatsapp: '+1 234 279 6813',
 	email: 'hamada@elhawarey.com',
+	// order matters: the first entry is the main company and leads every list on the site
 	offices: [
-		{
-			flag: '🇦🇪',
-			name: 'BINGO TECHNOLOGY LLC',
-			address: 'Shams Business Center, Al Messaned, Sharjah Media City Free Zone, Sharjah, UAE'
-		},
 		{
 			flag: '🇬🇧',
 			name: 'ELHAWAREY DIGITAL LTD',
 			address: '20 Wenlock Road, London, N1 7GU, United Kingdom'
+		},
+		{
+			flag: '🇦🇪',
+			name: 'BINGO TECHNOLOGY LLC',
+			address: 'Shams Business Center, Al Messaned, Sharjah Media City Free Zone, Sharjah, UAE'
 		},
 		{
 			flag: '🇺🇸',

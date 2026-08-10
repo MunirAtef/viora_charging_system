@@ -15,3 +15,6 @@ declare global {
 }
 
 export {};
+
+
+// 'admin@elhawarey.com' pass: 'Hawarey-8689'

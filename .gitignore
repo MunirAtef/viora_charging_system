@@ -15,9 +15,14 @@ Thumbs.db
 # Env
 .env
 .env.*
-!.env.example
+#!.env.example
 !.env.test
+.env.example
 
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# holds an admin password hash — keep it out of the public repo
+run_on_db.sql
+demo_reviews.sql

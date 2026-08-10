@@ -1,4 +1,9 @@
+import { env } from '$env/dynamic/private';
 import { sql } from '$lib/server/db';
+
+// Recharges completed before this site existed. Counted into the public total, so it must be
+// a real figure from the business's own records — it defaults to zero and claims nothing.
+const before = Math.max(0, Math.trunc(Number(env.OPERATIONS_BEFORE_SITE)) || 0);
 
 export async function load() {
 	const [countries, apps] = await Promise.all([
@@ -14,7 +19,7 @@ export async function load() {
 		            where q.active and q.app_id = ${primary.id} order by q.coins`
 		: [];
 
-	const [reviews, [summary]] = await Promise.all([
+	const [reviews, [summary], [buyers]] = await Promise.all([
 		sql`select r.rating, r.body, r.created_at, u.name, c.code as country_code, a.name as app
 		    from reviews r
 		    join users u on u.id = r.user_id
@@ -23,8 +28,9 @@ export async function load() {
 		    join apps a on a.id = o.app_id
 		    where r.approved
 		    order by r.id desc limit 6`,
-		sql`select count(*)::int, round(avg(rating), 1) as average from reviews where approved`
+		sql`select count(*)::int, round(avg(rating), 1) as average from reviews where approved`,
+		sql`select count(*)::int from orders where status = 'delivered'`
 	]);
 
-	return { countries, apps, primary, quotas, reviews, summary };
+	return { countries, apps, primary, quotas, reviews, summary, completed: buyers.count + before };
 }

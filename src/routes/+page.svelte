@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Gem from '$lib/components/Gem.svelte';
+	import AppIcon from '$lib/components/AppIcon.svelte';
 	import Stars from '$lib/components/Stars.svelte';
 	import Typewriter from '$lib/components/Typewriter.svelte';
 	import { countryName } from '$lib/countries';
@@ -30,16 +31,16 @@
 		{#each data.apps as a (a.slug)}
 			{#if a.active}
 				<a href="#countries" class="facet block p-4 text-center">
-					<span class="block">
-						<span class="tabular block text-2xl text-gem">{a.name.slice(0, 1)}</span>
+					<span class="flex flex-col items-center">
+						<span class="text-2xl text-gem"><AppIcon slug={a.slug} name={a.name} size={40} /></span>
 						<span class="mt-2 block text-sm" dir="ltr">{a.name}</span>
 						<span class="mt-1 block text-xs text-gold">{m.home.available}</span>
 					</span>
 				</a>
 			{:else}
 				<div class="facet p-4 text-center opacity-50">
-					<div>
-						<span class="tabular block text-2xl text-muted">{a.name.slice(0, 1)}</span>
+					<div class="flex flex-col items-center">
+						<span class="text-2xl text-muted"><AppIcon slug={a.slug} name={a.name} size={40} /></span>
 						<span class="mt-2 block text-sm" dir="ltr">{a.name}</span>
 						<span class="mt-1 block text-xs text-muted">{m.home.soon}</span>
 					</div>
@@ -95,11 +96,16 @@
 </section>
 
 <!-- Reviews come from delivered orders only, so the section simply isn't there until one exists. -->
-{#if data.reviews.length}
+{#if data.reviews.length || data.completed}
 	<section class="mx-auto max-w-6xl px-5 pb-16">
 		<h2 class="mb-1 font-display text-2xl">{m.reviews.title}</h2>
 		<p class="mb-5 text-sm text-muted">
-			{m.reviews.note(data.summary.count, data.summary.average)}
+			{#if data.completed}
+				{m.reviews.completed(data.completed.toLocaleString('en'))}
+			{/if}
+			{#if data.reviews.length}
+				· {m.reviews.note(data.summary.count, data.summary.average)}
+			{/if}
 		</p>
 		<div class="grid gap-4 md:grid-cols-3">
 			{#each data.reviews as r (r.created_at)}

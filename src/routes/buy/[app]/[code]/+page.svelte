@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import AppIcon from '$lib/components/AppIcon.svelte';
 	import Gem from '$lib/components/Gem.svelte';
 	import { countryName } from '$lib/countries';
 	import { t } from '$lib/i18n';
@@ -34,10 +35,11 @@
 		{#each data.apps as a (a.slug)}
 			<a
 				href="/buy/{a.slug}/{data.country.code}"
-				class="border px-4 py-1 text-sm {a.slug === data.app.slug
+				class="flex items-center gap-2 border px-4 py-1 text-sm {a.slug === data.app.slug
 					? 'border-gem text-gem'
 					: 'border-edge text-muted'}"
 			>
+				<AppIcon slug={a.slug} name={a.name} size={18} />
 				{a.name}
 			</a>
 		{/each}

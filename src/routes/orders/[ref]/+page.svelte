@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { contact } from '$lib/contact';
 	import Stars from '$lib/components/Stars.svelte';
+	import mastercard from '$lib/assets/mastercard.png';
+	import visa from '$lib/assets/visa.png';
 	import { countryName } from '$lib/countries';
 	import { t } from '$lib/i18n';
 	import type { PaymentMethod, Status } from '$lib/orders';
@@ -101,9 +103,20 @@
 					</div>
 				</div>
 
-				<!-- ponytail: the gateway edge. When Stripe keys exist, this button becomes a checkout
-				     session redirect and the webhook flips the order to 'paid' instead of the admin. -->
-				<p class="mt-6 text-xs text-muted">{m.order.cardSoon}</p>
+				<!-- ponytail: the gateway edge. When Stripe keys exist, these marks become a checkout
+				     button and the webhook flips the order to 'paid' instead of the admin. -->
+				<div class="mt-6 flex items-center gap-3 border-t border-edge/60 pt-4">
+					<img src={visa} alt="Visa" width="32" height="32" class="h-7 w-7 rounded opacity-60" />
+					<img
+						src={mastercard}
+						alt="Mastercard"
+						width="32"
+						height="32"
+						class="h-7 w-7 rounded opacity-60"
+					/>
+					<span class="text-xs text-muted">{m.order.cardSoon}</span>
+				</div>
+				<p class="mt-3 text-xs text-muted">{m.order.noCharge}</p>
 			</div>
 		</div>
 
