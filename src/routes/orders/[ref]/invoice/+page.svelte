@@ -27,7 +27,7 @@
 	</div>
 
 	<!-- Plain paper, English and LTR: printed as-is, never inheriting the site's dark theme. -->
-	<article class="paper bg-white p-6 text-black sm:p-10" dir="ltr">
+	<article class="paper bg-white p-6 text-black sm:p-10 print:p-6" dir="ltr">
 		<header class="flex flex-wrap items-start justify-between gap-6">
 			<div class="flex items-center gap-3">
 				<img src="/logo-mark.png" alt="" width="56" height="56" class="h-14 w-14 rounded-full" />
@@ -49,7 +49,7 @@
 			</div>
 		</header>
 
-		<section class="mt-8 grid grid-cols-2 gap-6 sm:mt-10 sm:grid-cols-4">
+		<section class="mt-8 grid grid-cols-2 gap-6 sm:mt-10 sm:grid-cols-4 print:mt-6 print:gap-4">
 			<div>
 				<h2 class="text-sm text-[#0d7a72]">Bill To</h2>
 				{#if o.name}<p class="mt-1 text-sm">{o.name}</p>{/if}
@@ -71,11 +71,11 @@
 			</div>
 			<div class="text-right">
 				<h2 class="text-sm text-[#0d7a72]">Amount Paid ({o.currency})</h2>
-				<p class="tabular mt-1 text-3xl">{Number(o.amount).toFixed(2)}</p>
+				<p class="tabular mt-1 text-3xl print:text-2xl">{Number(o.amount).toFixed(2)}</p>
 			</div>
 		</section>
 
-		<div class="mt-10 overflow-x-auto">
+		<div class="mt-10 overflow-x-auto print:mt-6">
 		<table class="w-full border-collapse text-sm">
 			<thead>
 				<tr class="border-y border-neutral-300 text-xs text-neutral-500">
@@ -87,7 +87,7 @@
 			</thead>
 			<tbody>
 				<tr class="border-b border-neutral-200">
-					<td class="py-4">Digital Service</td>
+					<td class="py-4 print:py-3">Digital Service</td>
 					<td class="tabular py-4 text-right">{money(o.amount)}</td>
 					<td class="tabular py-4 text-right">1</td>
 					<td class="tabular py-4 text-right">{money(o.amount)}</td>
@@ -96,7 +96,7 @@
 		</table>
 		</div>
 
-		<div class="mt-4 flex justify-end">
+		<div class="mt-4 flex justify-end print:mt-3">
 			<dl class="w-64 text-sm">
 				<div class="flex justify-between py-1">
 					<dt class="text-neutral-600">Subtotal</dt>
@@ -113,7 +113,7 @@
 			</dl>
 		</div>
 
-		<section class="mt-10 text-xs leading-relaxed text-neutral-600">
+		<section class="mt-10 text-xs leading-relaxed text-neutral-600 print:mt-6 print:leading-snug">
 			<h2 class="text-neutral-800">Notes</h2>
 			<p class="tabular mt-2">
 				Paid by {messages.en.payment[o.payment_method as PaymentMethod] ?? o.payment_method ?? '—'}{#if o.payment_ref}, reference
@@ -132,14 +132,14 @@
 		</section>
 
 		<!-- Remittance details; kept on one page so a transfer is never read off a split table. -->
-		<section class="bank mt-8 border-t border-neutral-300 pt-4">
+		<section class="bank mt-8 border-t border-neutral-300 pt-4 print:mt-5 print:pt-3">
 			<h2 class="text-xs text-neutral-800">Bank transfer details</h2>
-			<div class="mt-3 grid gap-5 sm:grid-cols-3">
+			<div class="mt-3 grid gap-5 sm:grid-cols-3 print:mt-2 print:gap-4">
 				{#each contact.banks as bank (bank.region)}
-					<dl class="text-[11px] leading-snug text-neutral-600">
+					<dl class="text-[11px] leading-snug text-neutral-600 print:text-[10px]">
 						<p class="mb-1 font-semibold text-[#0d7a72]">{bank.region}</p>
 						{#each bank.rows as [key, value] (key)}
-							<div class="mt-1">
+							<div class="mt-1 print:mt-0.5">
 								<dt class="text-neutral-500">{key}</dt>
 								<!-- mono for anything meant to be copied digit by digit -->
 								<dd class="text-neutral-800" class:tabular={!key.includes('address')}>
@@ -152,7 +152,7 @@
 			</div>
 		</section>
 
-		<p class="mt-8 text-center text-xs text-neutral-400">Page 1/1</p>
+		<p class="mt-8 text-center text-xs text-neutral-400 print:mt-4">Page 1/1</p>
 	</article>
 </div>
 
