@@ -180,7 +180,7 @@ const ar: typeof en = {
 	reviews: {
 		title: 'آراء عملائنا',
 		completed: (n: string) => `${n} عملية شحن تمت`,
-		note: (n: number, avg: string) => `${avg} من 5 بناءً على ${n} عملية شراء موثّقة`,
+		note: (n: number, avg: string) => `${avg} من 5 بناءً على عمليات شراء موثّقة`,
 		empty: 'لا توجد تقييمات بعد — كل طلب يمكنه ترك تقييم بعد تنفيذه.',
 		verified: 'شراء موثّق',
 		formTitle: 'قيّم طلبك',
