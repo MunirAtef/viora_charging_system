@@ -248,7 +248,20 @@ export default {
 			method: 'Payment method',
 			reference: 'Payment reference',
 			note: 'Note / reason',
-			empty: 'No orders here.'
+			empty: 'No orders here.',
+			create: 'Add a past order',
+			createNote:
+				'For sales made before the site existed. The customer account is created from the email if it is not registered yet, and the order gets a ref and an invoice like any other.',
+			name: 'Customer name',
+			email: 'Email',
+			playerId: 'In-app ID',
+			phone: 'Phone (optional)',
+			country: 'Country',
+			app: 'App',
+			coins: 'Coins',
+			amount: 'Amount',
+			requestedAt: 'Requested on',
+			chargedAt: 'Charged on'
 		}
 	},
 	errors: {
@@ -284,6 +297,7 @@ export default {
 		countryUnavailable: 'This country is not available',
 		noInvoice: 'There is no invoice for this order — invoices are issued once delivery completes',
 		notFound: 'Page not found',
+		badDate: 'Enter a valid date',
 		badRating: 'Pick a rating from 1 to 5',
 		reviewNotAllowed: 'Only a delivered order can be reviewed, and only once'
 	}

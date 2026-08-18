@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { countryName, flag } from '$lib/countries';
 	import { t } from '$lib/i18n';
-	import { NEXT, PAYMENT_METHODS, type Status } from '$lib/orders';
+	import { NEXT, PAYMENT_METHODS, STATUSES, type Status } from '$lib/orders';
 	let { data, form } = $props();
 
 	const m = $derived(t(data.lang));
@@ -39,6 +39,91 @@
 			{form.message}
 		</p>
 	{/if}
+
+	<details class="facet p-5">
+		<summary class="cursor-pointer text-sm text-gem">{m.admin.orders.create}</summary>
+		<p class="mt-2 text-xs text-muted">{m.admin.orders.createNote}</p>
+		<form method="POST" action="?/create" class="mt-4 grid gap-3 sm:grid-cols-3">
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.name}</span>
+				<input name="name" required class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.email}</span>
+				<input name="email" type="email" required dir="ltr" class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.phone}</span>
+				<input name="phone" dir="ltr" class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.app}</span>
+				<select name="app_id" required class="field mt-1">
+					{#each data.apps as a (a.id)}
+						<option value={a.id}>{a.name}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.playerId}</span>
+				<input name="player_id" required dir="ltr" class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.coins}</span>
+				<input name="coins" type="number" min="1" required class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.country}</span>
+				<select name="country_id" required class="field mt-1">
+					{#each data.countries as c (c.id)}
+						<option value={c.id}>{flag(c.code)} {countryName(c.code, data.lang)} · {c.currency}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.amount}</span>
+				<input name="amount" type="number" step="0.01" min="0.01" required class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.method}</span>
+				<select name="payment_method" class="field mt-1">
+					<option value="">{m.common.none}</option>
+					{#each PAYMENT_METHODS as key (key)}
+						<option value={key} selected={key === 'bank'}>{m.payment[key]}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.requestedAt}</span>
+				<input name="created_at" type="date" required class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.chargedAt}</span>
+				<input name="paid_at" type="date" class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.status}</span>
+				<select name="status" class="field mt-1">
+					{#each STATUSES as key (key)}
+						<option value={key} selected={key === 'delivered'}>{m.status[key]}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="block sm:col-span-2">
+				<span class="text-xs text-muted">{m.admin.orders.reference}</span>
+				<input name="payment_ref" dir="ltr" class="field mt-1" />
+			</label>
+			<label class="block">
+				<span class="text-xs text-muted">{m.admin.orders.note}</span>
+				<input name="note" class="field mt-1" />
+			</label>
+			<div class="sm:col-span-3">
+				<button class="bg-gold px-5 py-2.5 font-semibold text-ink hover:bg-white">
+					{m.common.add}
+				</button>
+			</div>
+		</form>
+	</details>
 
 	<div class="divide-y divide-edge/60 border border-edge/60">
 		{#each data.orders as o (o.ref)}

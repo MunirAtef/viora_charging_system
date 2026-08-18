@@ -165,6 +165,37 @@ await sql
 			'subscriptions die with the account'
 		);
 
+		// Historical orders, typed into the admin console: the customer is created or renamed from
+		// the email, the package is reused if that coin amount already exists, and a date entered
+		// as a plain day lands on that same day when the invoice prints it in Cairo time.
+		const at = (d) => sql`(${d}::date + time '12:00') at time zone 'Africa/Cairo'`;
+		const customer = (name) => sql`
+			insert into users (name, email, password_hash)
+			values (${name}, 'smoke-past@example.com', 'x')
+			on conflict (email) do update set name = excluded.name
+			returning id, name`;
+		const [made] = await customer('Old Customer');
+		const [renamed] = await customer('Invoice Name');
+		assert.equal(renamed.id, made.id, 'a second import reuses the account instead of failing');
+		assert.equal(renamed.name, 'Invoice Name', 'the invoice name wins');
+
+		const [reused] = await sql`
+			insert into quotas (coins, app_id) values (999999, ${app.id})
+			on conflict (app_id, coins) do update set coins = excluded.coins returning id`;
+		assert.equal(reused.id, quota.id, 'an existing package is reused, not duplicated');
+
+		const [past] = await sql`
+			insert into orders (user_id, app_id, country_id, quota_id, player_id, phone, amount,
+			                    currency, status, created_at, paid_at, delivered_at, payment_method)
+			values (${made.id}, ${app.id}, ${country.id}, ${quota.id}, '385891305', '', 542.50,
+			        'EUR', 'delivered', ${at('2026-07-14')}, ${at('2026-07-21')}, ${at('2026-07-21')},
+			        'bank')
+			returning ref, created_at, paid_at`;
+		assert.match(past.ref, /^ELH-[0-9A-F]{8}$/, 'a past order is quotable like any other');
+		const cairo = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Africa/Cairo' });
+		assert.equal(cairo(past.created_at), '2026-07-14', 'the requested day survives the round trip');
+		assert.equal(cairo(past.paid_at), '2026-07-21');
+
 		throw new Error('rollback');
 	})
 	.catch((e) => {
