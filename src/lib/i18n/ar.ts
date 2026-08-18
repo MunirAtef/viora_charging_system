@@ -204,6 +204,15 @@ const ar: typeof en = {
 		card: 'بطاقة',
 		cash: 'نقدي'
 	},
+	datetime: {
+		calendar: 'فتح التقويم',
+		prevMonth: 'الشهر السابق',
+		nextMonth: 'الشهر التالي',
+		hour: 'الساعة',
+		minute: 'الدقيقة',
+		now: 'الآن',
+		done: 'تم'
+	},
 	admin: {
 		title: 'لوحة التحكم',
 		ordersLink: 'الطلبات والدفع',

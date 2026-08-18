@@ -206,6 +206,15 @@ export default {
 		card: 'Card',
 		cash: 'Cash'
 	},
+	datetime: {
+		calendar: 'Open the calendar',
+		prevMonth: 'Previous month',
+		nextMonth: 'Next month',
+		hour: 'Hour',
+		minute: 'Minute',
+		now: 'Now',
+		done: 'Done'
+	},
 	admin: {
 		title: 'Dashboard',
 		ordersLink: 'Orders & payments',
