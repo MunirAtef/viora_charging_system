@@ -2,7 +2,7 @@
 // only ever moves along an allowed edge. Run: npm run db:push && npm run smoke  (rolls back)
 import assert from 'node:assert/strict';
 import postgres from 'postgres';
-import { NEXT, STATUSES } from '../src/lib/orders.ts';
+import { NEXT, STATUSES, parseDateTime } from '../src/lib/orders.ts';
 
 // the lifecycle map itself: no shortcut from unpaid to delivered, and refunds are the end
 assert.deepEqual(Object.keys(NEXT), [...STATUSES]);
@@ -11,6 +11,14 @@ for (const [from, tos] of Object.entries(NEXT))
 assert.ok(!NEXT.awaiting_payment.includes('delivered'), 'unpaid orders cannot be delivered');
 assert.deepEqual(NEXT.refunded, []);
 assert.deepEqual(NEXT.cancelled, []);
+
+// dates typed into the admin console: day first, and nothing that isn't a real moment gets through
+assert.equal(parseDateTime('14/07/2026 09:30'), '2026-07-14T09:30');
+assert.equal(parseDateTime('01/12/2026 00:00'), '2026-12-01T00:00', 'day first, not month');
+assert.equal(parseDateTime('29/02/2024 12:00'), '2024-02-29T12:00', 'leap day is a real day');
+for (const bad of ['31/02/2026 12:00', '29/02/2026 12:00', '14/13/2026 12:00', '14/07/2026 25:00',
+	'14/07/2026 09:60', '2026-07-14T09:30', '14/7/2026 9:30', '', 'now'])
+	assert.equal(parseDateTime(bad), null, `${bad} is not a date`);
 
 const sql = postgres(process.env.DATABASE_URL);
 

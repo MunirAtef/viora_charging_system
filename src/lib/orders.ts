@@ -26,3 +26,14 @@ export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 export const isStatus = (s: string): s is Status => STATUSES.includes(s as Status);
 export const isPaymentMethod = (s: string): s is PaymentMethod =>
 	PAYMENT_METHODS.includes(s as PaymentMethod);
+
+// Dates are typed into the admin console as DD/MM/YYYY HH:mm, the way they are written here.
+// Returns the ISO the database reads, or null — 31/02 and 25:00 come back null because a real
+// date is one that survives the round trip unchanged.
+export const parseDateTime = (v: string) => {
+	const m = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/.exec(v.trim());
+	if (!m) return null;
+	const iso = `${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}`;
+	const at = new Date(`${iso}:00Z`);
+	return !isNaN(at.valueOf()) && at.toISOString().slice(0, 16) === iso ? iso : null;
+};

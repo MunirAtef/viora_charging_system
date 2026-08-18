@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DateTimeField from '$lib/components/DateTimeField.svelte';
 	import { countryName, flag } from '$lib/countries';
 	import { t } from '$lib/i18n';
 	import { NEXT, PAYMENT_METHODS, STATUSES, type Status } from '$lib/orders';
@@ -93,14 +94,13 @@
 					{/each}
 				</select>
 			</label>
-			<label class="block">
-				<span class="text-xs text-muted">{m.admin.orders.requestedAt}</span>
-				<input name="created_at" type="datetime-local" required class="field mt-1" />
-			</label>
-			<label class="block">
-				<span class="text-xs text-muted">{m.admin.orders.chargedAt}</span>
-				<input name="paid_at" type="datetime-local" class="field mt-1" />
-			</label>
+			<DateTimeField
+				name="created_at"
+				label={m.admin.orders.requestedAt}
+				lang={data.lang}
+				required
+			/>
+			<DateTimeField name="paid_at" label={m.admin.orders.chargedAt} lang={data.lang} />
 			<label class="block">
 				<span class="text-xs text-muted">{m.admin.orders.status}</span>
 				<select name="status" class="field mt-1">

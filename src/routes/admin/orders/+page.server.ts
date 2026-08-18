@@ -5,7 +5,7 @@ import { guard } from '../guard';
 import { notify } from '$lib/server/push';
 import { t } from '$lib/i18n';
 import { hashPassword } from '$lib/password';
-import { NEXT, isPaymentMethod, isStatus, type Status } from '$lib/orders';
+import { NEXT, isPaymentMethod, isStatus, parseDateTime, type Status } from '$lib/orders';
 
 export async function load({ locals, url }) {
 	guard(locals);
@@ -104,10 +104,8 @@ export const actions = {
 		const amount = Number(f.get('amount'));
 		const status = get('status');
 		const method = get('payment_method');
-		const requested = get('created_at');
-		const charged = get('paid_at');
-		const isDate = (d: string) =>
-			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(d) && !isNaN(Date.parse(d));
+		const requested = parseDateTime(get('created_at'));
+		const charged = get('paid_at') ? parseDateTime(get('paid_at')) : '';
 
 		if (name.length < 2) return fail(400, { message: e.badName });
 		if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail(400, { message: e.badEmail });
@@ -116,8 +114,7 @@ export const actions = {
 		if (!(amount > 0)) return fail(400, { message: e.badPrice });
 		if (!isStatus(status)) return fail(400, { message: e.unknownStatus });
 		if (method && !isPaymentMethod(method)) return fail(400, { message: e.needMethod });
-		if (!isDate(requested) || (charged && !isDate(charged)))
-			return fail(400, { message: e.badDate });
+		if (requested === null || charged === null) return fail(400, { message: e.badDate });
 
 		const [country] = await sql`select id, currency from countries where id = ${Number(f.get('country_id'))}`;
 		if (!country) return fail(400, { message: e.countryMissing });
