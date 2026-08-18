@@ -260,8 +260,8 @@ export default {
 			app: 'App',
 			coins: 'Coins',
 			amount: 'Amount',
-			requestedAt: 'Requested on',
-			chargedAt: 'Charged on'
+			requestedAt: 'Requested at (Cairo time)',
+			chargedAt: 'Charged at (Cairo time)'
 		}
 	},
 	errors: {

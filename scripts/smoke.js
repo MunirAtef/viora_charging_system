@@ -166,9 +166,9 @@ await sql
 		);
 
 		// Historical orders, typed into the admin console: the customer is created or renamed from
-		// the email, the package is reused if that coin amount already exists, and a date entered
-		// as a plain day lands on that same day when the invoice prints it in Cairo time.
-		const at = (d) => sql`(${d}::date + time '12:00') at time zone 'Africa/Cairo'`;
+		// the email, the package is reused if that coin amount already exists, and the wall clock
+		// the admin typed is the one the invoice prints in Cairo time.
+		const at = (d) => sql`(${d}::text)::timestamp at time zone 'Africa/Cairo'`;
 		const customer = (name) => sql`
 			insert into users (name, email, password_hash)
 			values (${name}, 'smoke-past@example.com', 'x')
@@ -188,13 +188,14 @@ await sql
 			insert into orders (user_id, app_id, country_id, quota_id, player_id, phone, amount,
 			                    currency, status, created_at, paid_at, delivered_at, payment_method)
 			values (${made.id}, ${app.id}, ${country.id}, ${quota.id}, '385891305', '', 542.50,
-			        'EUR', 'delivered', ${at('2026-07-14')}, ${at('2026-07-21')}, ${at('2026-07-21')},
-			        'bank')
+			        'EUR', 'delivered', ${at('2026-07-14T09:30')}, ${at('2026-07-21T18:05')},
+			        ${at('2026-07-21T18:05')}, 'bank')
 			returning ref, created_at, paid_at`;
 		assert.match(past.ref, /^ELH-[0-9A-F]{8}$/, 'a past order is quotable like any other');
-		const cairo = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Africa/Cairo' });
-		assert.equal(cairo(past.created_at), '2026-07-14', 'the requested day survives the round trip');
-		assert.equal(cairo(past.paid_at), '2026-07-21');
+		const cairo = (d) =>
+			d.toLocaleString('sv-SE', { timeZone: 'Africa/Cairo' }).replace(' ', 'T').slice(0, 16);
+		assert.equal(cairo(past.created_at), '2026-07-14T09:30', 'the wall clock survives the round trip');
+		assert.equal(cairo(past.paid_at), '2026-07-21T18:05');
 
 		throw new Error('rollback');
 	})

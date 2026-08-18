@@ -95,11 +95,11 @@
 			</label>
 			<label class="block">
 				<span class="text-xs text-muted">{m.admin.orders.requestedAt}</span>
-				<input name="created_at" type="date" required class="field mt-1" />
+				<input name="created_at" type="datetime-local" required class="field mt-1" />
 			</label>
 			<label class="block">
 				<span class="text-xs text-muted">{m.admin.orders.chargedAt}</span>
-				<input name="paid_at" type="date" class="field mt-1" />
+				<input name="paid_at" type="datetime-local" class="field mt-1" />
 			</label>
 			<label class="block">
 				<span class="text-xs text-muted">{m.admin.orders.status}</span>

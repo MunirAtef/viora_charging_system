@@ -106,7 +106,8 @@ export const actions = {
 		const method = get('payment_method');
 		const requested = get('created_at');
 		const charged = get('paid_at');
-		const isDate = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !isNaN(Date.parse(d));
+		const isDate = (d: string) =>
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(d) && !isNaN(Date.parse(d));
 
 		if (name.length < 2) return fail(400, { message: e.badName });
 		if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail(400, { message: e.badEmail });
@@ -123,9 +124,11 @@ export const actions = {
 		const [app] = await sql`select id from apps where id = ${Number(f.get('app_id'))}`;
 		if (!app) return fail(400, { message: e.appMissing });
 
-		// only the day is known for old sales, so it is pinned to midday in the company's timezone —
-		// the same convention the invoice prints in, so the date never slides across a day boundary
-		const at = (d: string) => sql`(${d}::date + time '12:00') at time zone 'Africa/Cairo'`;
+		// the admin types a wall clock, read in the company's timezone — the same one the invoice
+		// prints in, so what was entered is what the document shows
+		// (::text first: an untyped bind parameter cast straight to timestamp is resolved as
+		// timestamptz by the server and silently shifts by the session timezone)
+		const at = (d: string) => sql`(${d}::text)::timestamp at time zone 'Africa/Cairo'`;
 
 		// the account is the customer's; an unusable random password keeps it login-proof until
 		// they reset it themselves

@@ -257,8 +257,8 @@ const ar: typeof en = {
 			app: 'التطبيق',
 			coins: 'عدد الكوينز',
 			amount: 'المبلغ',
-			requestedAt: 'تاريخ الطلب',
-			chargedAt: 'تاريخ الدفع'
+			requestedAt: 'وقت الطلب (بتوقيت القاهرة)',
+			chargedAt: 'وقت الدفع (بتوقيت القاهرة)'
 		}
 	},
 	errors: {
